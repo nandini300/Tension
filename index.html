@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#A5BCD6">
+<title>the sexual tension between me and what I am capable of</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="tension">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..600&family=Instrument+Sans:wght@400..600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="app">
+  <div class="topbar"><div class="acct"><button class="syncstat" id="syncStat" data-s="syncing" aria-label="Sync status" hidden><i aria-hidden="true"></i><span>syncing</span></button><button class="lockbtn" id="lockBtn" hidden>Lock</button><span class="demochip" id="demoChip">Demo</span><button class="unlockbtn" id="unlockBtn">Unlock</button></div><div class="tabs" role="tablist" id="tabsTop"></div></div>
+
+  <!-- TODAY -->
+  <section class="view" id="v-today">
+    <div class="arches" id="arches"></div>
+    <div class="td-top">
+      <div class="clockrow"><div class="clock" id="tdClock"></div><span class="datechip" id="tdDate"></span></div>
+      <h1 class="rot" id="rotTitle" aria-live="polite"></h1>
+    </div>
+    <div class="tension">
+      <div class="track"><div class="gapb" id="tGap" aria-hidden="true"><span class="gw">the sexual tension</span><span class="gp" id="tGapLbl"></span></div><div class="fill" id="tFill"></div><div class="knot" id="tKnot"></div></div>
+      <div class="ends"><span>me</span><span>what I am capable of</span></div>
+      <div class="readout" id="tRead"></div>
+    </div>
+    <div class="prio" id="prio"></div>
+    <div class="td-layout">
+      <div class="card frost" id="frost">
+        <div class="frost-in">
+          <div class="td-hab-head"><h2 id="tdSecName"></h2><span class="now" id="tdNow">Now</span>
+            <button class="plus hplus" id="habPlus" aria-expanded="false" aria-label="Add a habit"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 3v10M3 8h10"/></svg></button></div>
+          <form class="habform" id="habForm" hidden>
+            <input type="text" id="habName" placeholder="New habit, e.g. Stretch for 10 minutes" aria-label="Habit name">
+            <div class="habopts">
+              <div class="optgroup" role="radiogroup" aria-label="Section" id="habSecOpts"></div>
+              <label class="freq">How often
+                <select id="habFreq"><option value="0">Every day</option><option value="1">1× a week</option><option value="2">2× a week</option><option value="3">3× a week</option><option value="4">4× a week</option><option value="5">5× a week</option></select>
+              </label>
+              <button class="go">Add habit</button>
+            </div>
+          </form>
+          <div class="secseg" id="tdSecSeg"></div>
+          <div id="tdHabits"></div>
+          <p class="scroll-hint" id="scrollHint"></p>
+        </div>
+      </div>
+      <div>
+        <div class="td-qhead"><h2>Today’s quests</h2><span class="td-count" id="tdCount" hidden></span></div>
+        <div id="tdEmpty"></div>
+        <div class="lists" id="tdLists"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HABITS -->
+  <section class="view" id="v-habits" hidden>
+    <div class="hab-grid">
+      <div class="card coll hg-coll"><h2>My collection</h2><p class="sub">Done today. Tap one to put it back.</p><div class="collection" id="collection"></div><div class="coll-foot" id="collFoot"></div></div>
+      <div class="card hg-bars">
+        <div class="week-nav">
+          <h2 id="weekTitle"></h2>
+          <button class="iconbtn" id="wkPrev" aria-label="Previous week"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 3 5 8l5 5"/></svg></button>
+          <button class="iconbtn" id="wkNext" aria-label="Next week"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m6 3 5 5-5 5"/></svg></button>
+        </div>
+        <p class="sub">Daily habits completed. Weekly targets aren't counted, so a rest day never drags the score.</p>
+        <div class="bars" id="bars"></div><div class="bar-labels" id="barLabels"></div>
+      </div>
+      <div class="card hg-rings"><h2>This week's targets</h2><p class="sub">Resets every Monday</p><div class="rings" id="rings"></div></div>
+      <div class="photo-row hg-photos" id="photoPair"></div>
+      <details class="card hab-all hg-all" id="habAll">
+        <summary><span><h2>Every habit this week</h2><span class="sub">Done, missed and still open. Tap to open.</span></span><i class="chev" aria-hidden="true"></i></summary>
+        <div class="grid-wrap"><table class="wk" id="wkTable"></table></div>
+        <div class="legend"><span><i class="dot done"></i>Done</span><span><i class="dot miss"></i>Missed</span><span><i class="dot pend"></i>Still open today</span><span>Tap any circle to fix a day you forgot to track.</span></div>
+      </details>
+    </div>
+  </section>
+
+  <!-- QUESTS -->
+  <section class="view" id="v-quests" hidden>
+    <div class="q-head">
+      <h2>Quests</h2>
+      <div class="seg" id="questSeg"><button data-qv="open" aria-pressed="true">Open</button><button data-qv="done" aria-pressed="false">Done</button></div>
+      <button class="newlist-btn" id="newListBtn" aria-expanded="false">+ New list</button>
+    </div>
+    <form class="newlist" id="newListForm" hidden>
+      <input type="text" id="newListName" placeholder="List name" aria-label="List name">
+      <div class="swatches" role="radiogroup" aria-label="List color">
+        <label title="Work"><input type="radio" name="cat" value="work" checked><span style="background:#4A2E27"></span></label>
+        <label title="Side quest"><input type="radio" name="cat" value="side"><span style="background:#5E7C9F"></span></label>
+        <label title="Escapism"><input type="radio" name="cat" value="esc"><span style="background:#4D0E12"></span></label>
+        <label title="Home"><input type="radio" name="cat" value="home"><span style="background:#F5EFC6"></span></label>
+      </div>
+      <button class="go">Add list</button>
+    </form>
+    <div class="sub-view" id="qv-open"><p class="reorder-hint"><span class="d">Drag a list by its colored header. Drop it anywhere: under another list, into a gap, or lower down to leave space above it.</span><span class="m">Hold a pill, then drag it to reorder.</span></p><div class="pills" id="pills" role="group" aria-label="Choose a list"></div><div class="lists" id="lists"></div><div class="pshelf" id="pshelf" hidden></div></div>
+    <div class="sub-view" id="qv-done" hidden><div class="done-wrap" id="doneWrap"></div></div>
+  </section>
+
+  <!-- GALLERY -->
+  <section class="view" id="v-gallery" hidden>
+    <h2 class="page-title">Gallery</h2>
+    <div class="gallery" id="gallery"></div>
+  </section>
+
+  <!-- FOCUS -->
+  <section class="view" id="v-focus" hidden>
+    <div class="stage">
+      <div class="mosaic" id="mosaic" aria-hidden="true"></div>
+      <div class="focus">
+        <div class="modes" id="modes"></div>
+        <div class="dial">
+          <svg viewBox="0 0 200 200"><circle cx="100" cy="100" r="92" fill="none" stroke="rgba(245,239,198,.18)" stroke-width="6"/><circle id="dialArc" cx="100" cy="100" r="92" fill="none" stroke="#F5EFC6" stroke-width="6" stroke-linecap="round"/></svg>
+          <div class="time"><div><span id="fclock">25:00</span><small id="modeLabel">focus</small></div></div>
+        </div>
+        <div class="controls"><button class="btn" id="startBtn">Start</button><button class="btn ghost" id="resetBtn">Reset</button></div>
+        <div class="sessions"><div id="sessText"></div><div class="pips" id="pips"></div></div>
+        <div class="quote" id="focusQuote" role="button" tabindex="0" aria-label="Show another quote"><img alt="Quote"><span class="hint">Tap for another</span></div>
+      </div>
+    </div>
+  </section>
+
+</div>
+<nav class="mobilebar" role="tablist" id="tabsBottom"></nav>
+
+<script src="assets.js"></script>
+<script src="sync.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
