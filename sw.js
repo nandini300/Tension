@@ -2,14 +2,14 @@
    Shell files show the cached copy instantly and refresh it in the background,
    so an update shows up the second time the app is opened. */
 importScripts('assets.js');   // ASSETS: the photo and quote list
-const CACHE='tension-v1', FONTS='tension-fonts';
+const CACHE='tension-v2', FONTS='tension-fonts';   // bump to make every device drop its old copy
 const SHELL=['./','index.html','styles.css','assets.js','sync.js','app.js','manifest.webmanifest',
   'icons/icon-192.png','icons/icon-512.png','icons/icon-maskable-512.png','icons/apple-touch-icon.png'];
 
 self.addEventListener('install',e=>{
   e.waitUntil((async()=>{
     const c=await caches.open(CACHE);
-    await c.addAll(SHELL);
+    await c.addAll(SHELL.map(u=>new Request(u,{cache:'reload'})));   // straight from the server, not the browser's copy
     await Promise.allSettled([...ASSETS.photos,...ASSETS.quotes].map(u=>c.add(u)));   // one missing photo shouldn't block install
     self.skipWaiting();
   })());
@@ -42,7 +42,10 @@ async function cacheFirst(req){
 async function fresh(req,name,fallback){
   const c=await caches.open(name);
   const hit=await c.match(req,{ignoreSearch:true})||(fallback&&await c.match(fallback));
-  const net=fetch(req).then(res=>{ if(res.ok||res.type==='opaque') c.put(fallback&&req.mode==='navigate'?fallback:req,res.clone()); return res; });
+  const net=fetch(req).then(res=>{   // refresh the copy we answered from, so the app address and index.html both stay current
+    if(res.ok||res.type==='opaque'){ c.put(req,res.clone()); if(fallback) c.put(fallback,res.clone()); }
+    return res;
+  });
   if(hit){ net.catch(()=>{}); return hit; }
   return net.catch(async()=>(fallback&&await c.match(fallback))||Response.error());
 }
